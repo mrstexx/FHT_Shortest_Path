@@ -14,6 +14,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
+            // Read .fxml file and init window application
             VBox root = (VBox) FXMLLoader.load(getClass().getResource("Window.fxml"));
             Scene scene = new Scene(root, DEFAULT_WIDTH, DEFAULT_HEIGHT);
             primaryStage.setScene(scene);

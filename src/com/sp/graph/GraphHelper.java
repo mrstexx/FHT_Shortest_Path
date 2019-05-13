@@ -4,12 +4,19 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GraphHelper {
 
-    public static String getShortestPath(String fileName) {
+    private static List<String> resultData;
+
+    public static List<String> getShortestPath(String fileName) {
         importNewData(fileName);
-        return "";
+        if (resultData != null) {
+            return resultData;
+        }
+        return null;
     }
 
     @SuppressWarnings("resource")
@@ -17,9 +24,10 @@ public class GraphHelper {
         File file = new File(fileName);
         try {
             BufferedReader bufferReader = new BufferedReader(new FileReader(file));
+            resultData = new ArrayList<>();
             String line = "";
             while ((line = bufferReader.readLine()) != null) {
-                System.out.println(line);
+                resultData.add(line);
             }
         } catch (IOException e) {
             e.printStackTrace();

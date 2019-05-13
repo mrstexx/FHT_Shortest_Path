@@ -1,6 +1,7 @@
 package com.sp.application;
 
 import java.io.File;
+import java.util.List;
 
 import com.sp.graph.GraphHelper;
 
@@ -22,6 +23,7 @@ public class WindowController {
 
     @FXML
     private MenuItem menuImportNewData;
+
     @FXML
     private MenuItem menuCloseWindow;
 
@@ -50,13 +52,15 @@ public class WindowController {
 
     @FXML
     void importNewData(ActionEvent event) {
+        // on import new data we show dialog to chose file to be imported
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Resource File");
         fileChooser.getExtensionFilters().add(new ExtensionFilter("Text Files", "*.txt"));
-
         File selectedFile = fileChooser.showOpenDialog(null);
-        this.fileName = selectedFile.getAbsolutePath();
-        labelFileName.setText("Imported from: " + selectedFile.getAbsolutePath());
+        if (selectedFile != null) {
+            this.fileName = selectedFile.getAbsolutePath();
+            labelFileName.setText("Imported from: " + selectedFile.getAbsolutePath());
+        }
     }
 
     @FXML
@@ -69,17 +73,26 @@ public class WindowController {
 
     @FXML
     void execGetPath(ActionEvent event) {
-        if (this.fieldStartStation.getText() == "" || this.fieldEndStation.getText() == "" || this.fileName == "") {
+        // it will be every time execute on get path button
+        if (this.fieldStartStation.getText().equals("") || this.fieldEndStation.getText().equals("")
+                || this.fileName == "") {
             String title = "Missing data";
             String message = "Something went wrong. Check you entered all fields.";
             showAlertMessage(message, title, AlertType.ERROR);
             return;
         }
-        String result = GraphHelper.getShortestPath(this.fileName);
-        this.resultArea.setText(result);
+        String outputResult = "";
+        List<String> result = GraphHelper.getShortestPath(this.fileName);
+        if (result != null) {
+            for (String line : result) {
+                outputResult += line + "\n";
+            }
+            this.resultArea.setText(outputResult);
+        }
     }
 
     private void showAlertMessage(String message, String title, AlertType alertType) {
+        // create alert message adapted for different alert types
         Alert alert = new Alert(alertType);
         alert.setTitle(title);
         alert.setHeaderText(null);
