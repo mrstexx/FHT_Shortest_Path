@@ -18,6 +18,7 @@ public class Main extends Application {
             Scene scene = new Scene(root, DEFAULT_WIDTH, DEFAULT_HEIGHT);
             primaryStage.setScene(scene);
             primaryStage.setTitle("FHT - Shortest Path Application");
+            primaryStage.setResizable(false);
             primaryStage.show();
         } catch (Exception e) {
             e.printStackTrace();
