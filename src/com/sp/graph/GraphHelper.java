@@ -9,10 +9,15 @@ import java.util.List;
 
 public class GraphHelper {
 
+    private static Graph graph;
     private static List<String> resultData;
 
-    public static List<String> getShortestPath(String fileName) {
-        importNewData(fileName);
+    /**
+     * @param {String} startStation Name of start station
+     * @param {String} endStation Name of end station
+     * @return {List<String>} List of all station between
+     */
+    public static List<String> getShortestPath(String startStation, String endStation) {
         if (resultData != null) {
             return resultData;
         }
@@ -20,14 +25,16 @@ public class GraphHelper {
     }
 
     @SuppressWarnings("resource")
-    private static void importNewData(String fileName) {
+    public static void importNewData(String fileName) {
         File file = new File(fileName);
         try {
             BufferedReader bufferReader = new BufferedReader(new FileReader(file));
-            resultData = new ArrayList<>();
             String line = "";
             while ((line = bufferReader.readLine()) != null) {
-                resultData.add(line);
+                if (line.equals("")) {
+                    continue;
+                }
+                // TODO import vertices and edges
             }
         } catch (IOException e) {
             e.printStackTrace();

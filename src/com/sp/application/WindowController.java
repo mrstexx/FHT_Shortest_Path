@@ -60,6 +60,7 @@ public class WindowController {
         if (selectedFile != null) {
             this.fileName = selectedFile.getAbsolutePath();
             labelFileName.setText("Imported from: " + selectedFile.getAbsolutePath());
+            GraphHelper.importNewData(fileName);
         }
     }
 
@@ -82,7 +83,8 @@ public class WindowController {
             return;
         }
         String outputResult = "";
-        List<String> result = GraphHelper.getShortestPath(this.fileName);
+        List<String> result = GraphHelper.getShortestPath(this.fieldStartStation.getText(),
+                this.fieldEndStation.getText());
         if (result != null) {
             for (String line : result) {
                 outputResult += line + "\n";
