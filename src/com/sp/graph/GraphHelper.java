@@ -6,9 +6,10 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class GraphHelper {
-
     private static Graph graph;
     private static List<String> resultData;
 
@@ -34,11 +35,25 @@ public class GraphHelper {
                 if (line.equals("")) {
                     continue;
                 }
-                // TODO import vertices and edges
+                ArrayList<String> parsedLine = getParsedString(line);
+                String lineName = parsedLine.get(0);
+                for (int i = 1; i < parsedLine.size(); i++) {
+                    System.out.println(parsedLine.get(i));
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private static ArrayList<String> getParsedString(String inputLine) {
+        ArrayList<String> parsedList = new ArrayList<String>();
+        Pattern pattern = Pattern.compile("[^\\s:\"]+|\"[^\"]*\"");
+        Matcher matcher = pattern.matcher(inputLine);
+        while (matcher.find()) {
+            parsedList.add(matcher.group().replaceAll("^\"|\"$", ""));
+        }
+        return parsedList;
     }
 
 }
