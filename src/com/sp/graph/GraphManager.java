@@ -9,16 +9,21 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class GraphHelper {
-    private static Graph graph;
-    private static List<String> resultData;
+public class GraphManager {
+
+    private Graph graph;
+    private List<String> resultData;
+
+    public GraphManager() {
+        graph = new Graph();
+    }
 
     /**
      * @param {String} startStation Name of start station
      * @param {String} endStation Name of end station
      * @return {List<String>} List of all station between
      */
-    public static List<String> getShortestPath(String startStation, String endStation) {
+    public List<String> getShortestPath(String startStation, String endStation) {
         if (resultData != null) {
             return resultData;
         }
@@ -26,7 +31,7 @@ public class GraphHelper {
     }
 
     @SuppressWarnings("resource")
-    public static void importNewData(String fileName) {
+    public void importNewData(String fileName) {
         File file = new File(fileName);
         try {
             BufferedReader bufferReader = new BufferedReader(new FileReader(file));
@@ -37,8 +42,13 @@ public class GraphHelper {
                 }
                 ArrayList<String> parsedLine = getParsedString(line);
                 String lineName = parsedLine.get(0);
-                for (int i = 1; i < parsedLine.size(); i++) {
-                    System.out.println(parsedLine.get(i));
+                for (int i = 1; i < parsedLine.size(); i += 2) {
+                    System.out.println("Line: " + lineName + ", Station: " + parsedLine.get(i));
+                    if (i + 1 < parsedLine.size()) {
+                        System.out.println("Time between " + parsedLine.get(i) + " and " + parsedLine.get(i + 2) + " : "
+                                + parsedLine.get(i + 1));
+                    }
+
                 }
             }
         } catch (IOException e) {

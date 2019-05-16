@@ -3,7 +3,7 @@ package com.sp.application;
 import java.io.File;
 import java.util.List;
 
-import com.sp.graph.GraphHelper;
+import com.sp.graph.GraphManager;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -20,6 +20,7 @@ import javafx.stage.FileChooser.ExtensionFilter;
 public class WindowController {
 
     private String fileName = "";
+    private GraphManager graphManager;
 
     @FXML
     private MenuItem menuImportNewData;
@@ -60,7 +61,8 @@ public class WindowController {
         if (selectedFile != null) {
             this.fileName = selectedFile.getAbsolutePath();
             labelFileName.setText("Imported from: " + selectedFile.getAbsolutePath());
-            GraphHelper.importNewData(fileName);
+            graphManager = new GraphManager();
+            graphManager.importNewData(fileName);
         }
     }
 
@@ -83,8 +85,10 @@ public class WindowController {
             return;
         }
         String outputResult = "";
-        List<String> result = GraphHelper.getShortestPath(this.fieldStartStation.getText(),
-                this.fieldEndStation.getText());
+        List<String> result = null;
+        if (graphManager != null) {
+            result = graphManager.getShortestPath(this.fieldStartStation.getText(), this.fieldEndStation.getText());
+        }
         if (result != null) {
             for (String line : result) {
                 outputResult += line + "\n";

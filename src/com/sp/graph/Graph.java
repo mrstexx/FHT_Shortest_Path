@@ -1,16 +1,14 @@
 package com.sp.graph;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Graph {
 
     private List<Vertex> vertices;
-    private List<Edge> edges;
 
     public Graph() {
-        vertices = new LinkedList<Vertex>();
-        edges = new LinkedList<Edge>();
+        vertices = new ArrayList<Vertex>();
     }
 
     public void addVertex(String name) {
@@ -20,20 +18,35 @@ public class Graph {
         }
     }
 
-    public void addEdge(Vertex firstStation, Vertex secondStation, int weight) {
-        Edge edge = new Edge(firstStation, secondStation, weight);
-        edges.add(edge);
+    public boolean contains(String name) {
+        for (Vertex vertex : this.vertices) {
+            if (vertex.getName().equals(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public Vertex getVertex(String name) {
+        for (Vertex vertex : this.vertices) {
+            if (vertex.getName().equals(name)) {
+                return vertex;
+            }
+        }
+        return null;
     }
 
     public List<Vertex> getAllVertices() {
         return this.vertices;
     }
 
-    public List<Edge> getAllEdges() {
-        return this.edges;
-    }
-
     public void printAll() {
-
+        for (Vertex vertex : this.vertices) {
+            System.out.print(vertex.getName() + " -> ");
+            for (Edge edge : vertex.getAllNeighbors()) {
+                System.out.print(edge.getDestinationVertex().getName() + " -> ");
+            }
+            System.out.println();
+        }
     }
 }

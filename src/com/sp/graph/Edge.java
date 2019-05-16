@@ -2,15 +2,13 @@ package com.sp.graph;
 
 public class Edge {
 
-    private Vertex startVertex = null;
-    private Vertex endVertex = null;
+    private Vertex destinationVertex = null;
     private int weight;
     private String edgeName;
 
-    public Edge(Vertex startVertex, Vertex endVertex, int weight) {
+    public Edge(Vertex startVertex, Vertex destinationVertex, int weight) {
         this.weight = weight;
-        this.startVertex = startVertex;
-        this.endVertex = endVertex;
+        this.destinationVertex = destinationVertex;
     }
 
     public void setWeight(int weight) {
@@ -25,23 +23,15 @@ public class Edge {
         this.edgeName = edgeName;
     }
 
-    public String edgeName() {
+    public String getEdgeName() {
         return this.edgeName;
     }
 
-    public void setStartVertex(Vertex startVertex) {
-        this.startVertex = startVertex;
+    public void setDestinationVertex(Vertex destinationVertex) {
+        this.destinationVertex = destinationVertex;
     }
 
-    public Vertex getStartVertex() {
-        return this.startVertex;
-    }
-
-    public void setEndVertex(Vertex endVertex) {
-        this.endVertex = endVertex;
-    }
-
-    public Vertex getEndtVertex() {
-        return this.endVertex;
+    public Vertex getDestinationVertex() {
+        return this.destinationVertex;
     }
 }
