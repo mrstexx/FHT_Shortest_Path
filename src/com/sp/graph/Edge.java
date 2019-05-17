@@ -6,9 +6,10 @@ public class Edge {
     private int weight;
     private String edgeName;
 
-    public Edge(Vertex startVertex, Vertex destinationVertex, int weight) {
+    public Edge(Vertex destinationVertex, int weight, String edgeName) {
         this.weight = weight;
         this.destinationVertex = destinationVertex;
+        this.edgeName = edgeName;
     }
 
     public void setWeight(int weight) {

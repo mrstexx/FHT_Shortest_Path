@@ -22,11 +22,18 @@ public class Vertex {
         return this.name;
     }
 
+    /**
+     * Add new edge to the vertex
+     * 
+     * @param edge edge to be added to the vertex
+     */
     public void addEdge(Edge edge) {
         if (this.neighbors == null) {
             this.neighbors = new LinkedList<Edge>();
         }
-        this.neighbors.add(edge);
+        if (edge != null) {
+            this.neighbors.add(edge);
+        }
     }
 
     public List<Edge> getAllNeighbors() {
