@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.List;
 
 import com.sp.graph.GraphManager;
+import com.sp.graph.Vertex;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -85,13 +86,13 @@ public class WindowController {
             return;
         }
         String outputResult = "";
-        List<String> result = null;
+        List<Vertex> result = null;
         if (graphManager != null) {
             result = graphManager.getShortestPath(this.fieldStartStation.getText(), this.fieldEndStation.getText());
         }
         if (result != null) {
-            for (String line : result) {
-                outputResult += line + "\n";
+            for (Vertex node : result) {
+                outputResult += node.getName() + "\n";
             }
             this.resultArea.setText(outputResult);
         }

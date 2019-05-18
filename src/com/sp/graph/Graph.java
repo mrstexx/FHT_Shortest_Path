@@ -6,6 +6,8 @@ import java.util.List;
 public class Graph {
 
     private List<Vertex> vertices;
+    private int shortestTime;
+    private List<Vertex> shortestPathNodes;
 
     public Graph() {
         vertices = new ArrayList<Vertex>();
@@ -29,6 +31,41 @@ public class Graph {
                 existingNode.addEdge(edge);
             }
         }
+    }
+
+    /**
+     * Function used to find shortest path and time between all nodes
+     * 
+     * @param startNode        Node from where to find path
+     * @param endNode          Node until where to find path
+     * @param maxNumberOfNodes Max number of all nodes used for head init
+     */
+    public void findShortestPath(Vertex startNode, Vertex endNode) {
+        Heap heap = new Heap(this.vertices.size());
+        ArrayList<String> visited = new ArrayList<>();
+        int shortestTime = 0;
+        do {
+            visited.add(startNode.getName());
+            if (startNode.getAllNeighbors() != null) {
+                for (Edge neighbour : startNode.getAllNeighbors()) {
+                    if (!visited.contains(neighbour.getDestinationVertex().getName())) {
+                        heap.insert(neighbour.getDestinationVertex(), neighbour.getWeight() + shortestTime);
+                    }
+                }
+            }
+            do {
+                startNode = heap.remove();
+                if (startNode != null) {
+                    shortestTime = startNode.getVertexWeight();
+                } else {
+                    break;
+                }
+            } while (visited.contains(startNode.getName()));
+            if (startNode == null) {
+                break;
+            }
+        } while (!startNode.getName().equals(endNode.getName()));
+        this.shortestTime = shortestTime;
     }
 
     /**
@@ -77,5 +114,13 @@ public class Graph {
                 System.out.println("null");
             }
         }
+    }
+
+    public int getShortestTime() {
+        return this.shortestTime;
+    }
+
+    public List<Vertex> getShortestPathNodes() {
+        return this.shortestPathNodes;
     }
 }

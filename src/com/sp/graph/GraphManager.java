@@ -12,20 +12,39 @@ import java.util.regex.Pattern;
 public class GraphManager {
 
     private Graph graph;
-    private List<String> resultData;
 
     public GraphManager() {
         graph = new Graph();
     }
 
     /**
-     * @param startStation Name of start station
-     * @param endStation   Name of end station
+     * @param startNodeName Name of start station
+     * @param endNodeName   Name of end station
      * @return List of all station between
      */
-    public List<String> getShortestPath(String startStation, String endStation) {
-        if (resultData != null) {
-            return resultData;
+    public List<Vertex> getShortestPath(String startNodeName, String endNodeName) {
+        // TODO add real values
+        Vertex startNode = graph.getVertex("Spittelau");
+        Vertex endNode = graph.getVertex("Thaliastrasse");
+        if (startNode != null && endNode != null) {
+            graph.findShortestPath(startNode, endNode);
+            int shortestTime = graph.getShortestTime();
+            List<Vertex> resultData = graph.getShortestPathNodes();
+
+            // if (resultData != null) {
+            System.out.println("-----------");
+            System.out.println("Shortest time: " + shortestTime);
+            /*
+             * System.out.println("List of stations: "); for (Vertex node : resultData) {
+             * System.out.println(node.getName()); }
+             */
+            System.out.println("-----------");
+            // }
+
+            // TODO Fit gui with end data
+            if (resultData != null) {
+                return resultData;
+            }
         }
         return null;
     }
@@ -71,6 +90,7 @@ public class GraphManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        // TODO temp for debugging to have overview of created edges between vertices
         graph.printAll();
     }
 
