@@ -9,7 +9,7 @@ public class Heap {
 
     private Vertex[] heap;
     private int maxSize;
-    private int currentSize = 0;
+    private int heapSize = 0;
 
     public Heap(int numberOfPlaces) {
         maxSize = numberOfPlaces; // end of the heap
@@ -17,47 +17,48 @@ public class Heap {
         Arrays.fill(heap, null);
     }
 
-    public void insert(Vertex node, int shortestTime) {
-        node.setVertexWeight(shortestTime);
-        currentSize++;
-        int i = currentSize; // last index
-        if (heap[i / 2] != null) {
-            while (i > 1 && (heap[i / 2].getVertexWeight() < shortestTime)) { // swapping
-                heap[i] = heap[i / 2]; // set parent element
-                i = i / 2; // get parent index
+    public void put(Vertex node, int shortestTime) {
+        if (heapSize != maxSize) {
+            heapSize++;
+            int i = heapSize;
+            node.setVertexWeight(shortestTime);
+            while (i > 0 && heap[i / 2] != null && heap[i / 2].getVertexWeight() < shortestTime) {
+                heap[i] = heap[i / 2];
+                i = i / 2;
             }
+            heap[i] = node;
         }
-        heap[i] = node;
     }
 
-    public Vertex remove() {
+    private void heapify() {
+    }
+
+    public Vertex get() {
         int i = 1, j;
-        Vertex element = heap[1];
-        if (currentSize > 0) {
+        Vertex element = heap[i];
+        if (heapSize > 0) {
             do {
                 j = 2 * i;
-                if (j < currentSize) {
-                    if (heap[j] != null && heap[j + 1] != null) {
-                        if (heap[j].getVertexWeight() < heap[j + 1].getVertexWeight()) {
-                            j++;
-                        }
+                if (j < heapSize) {
+                    if (heap[j] != null && heap[j + 1] != null
+                            && heap[j].getVertexWeight() < heap[j + 1].getVertexWeight()) {
+                        j++;
                     }
-                    if (heap[currentSize] != null && heap[j] != null) {
-                        if (heap[currentSize].getVertexWeight() < heap[j].getVertexWeight()) {
-                            heap[i] = heap[j];
-                            i = j;
-                        } else {
-                            heap[i] = heap[currentSize];
-                        }
+                    if (heap[heapSize] != null && heap[j] != null
+                            && heap[heapSize].getVertexWeight() < heap[j].getVertexWeight()) {
+                        heap[i] = heap[j];
+                        i = j;
+                    } else {
+                        heap[i] = heap[heapSize] != null ? heap[heapSize] : heap[i];
                     }
                 } else {
-                    heap[i] = heap[currentSize];
+                    heap[i] = heap[heapSize] != null ? heap[heapSize] : heap[i];
                 }
-            } while (heap[i].getVertexWeight() != heap[currentSize].getVertexWeight());
-            currentSize--;
-            return element;
+            } while (heap[i] != null && heap[heapSize] != null
+                    && heap[i].getVertexWeight() != heap[heapSize].getVertexWeight());
+            heapSize--;
         }
-        return null;
+        System.out.println(heapSize);
+        return element;
     }
-
 }

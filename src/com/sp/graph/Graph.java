@@ -48,24 +48,28 @@ public class Graph {
             visited.add(startNode.getName());
             if (startNode.getAllNeighbors() != null) {
                 for (Edge neighbour : startNode.getAllNeighbors()) {
-                    if (!visited.contains(neighbour.getDestinationVertex().getName())) {
-                        heap.insert(neighbour.getDestinationVertex(), neighbour.getWeight() + shortestTime);
+                    if (!containsList(visited, neighbour.getDestinationVertex().getName())) {
+                        heap.put(neighbour.getDestinationVertex(), neighbour.getWeight() + shortestTime);
                     }
                 }
             }
             do {
-                startNode = heap.remove();
+                startNode = heap.get();
                 if (startNode != null) {
-                    shortestTime = startNode.getVertexWeight();
-                } else {
-                    break;
+                    shortestTime += startNode.getVertexWeight();
                 }
-            } while (visited.contains(startNode.getName()));
-            if (startNode == null) {
-                break;
-            }
-        } while (!startNode.getName().equals(endNode.getName()));
+            } while (startNode != null && containsList(visited, startNode.getName()));
+        } while (startNode != null && !startNode.getName().equals(endNode.getName()));
         this.shortestTime = shortestTime;
+    }
+
+    private boolean containsList(List<String> list, String name) {
+        for (String entry : list) {
+            if (name.equals(entry)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
