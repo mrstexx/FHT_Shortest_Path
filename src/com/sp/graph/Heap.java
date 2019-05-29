@@ -1,64 +1,120 @@
 package com.sp.graph;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 
 /**
  * Implementation of min heap
  */
 public class Heap {
+    private ArrayList<Edge> heap;
 
-    private Vertex[] heap;
-    private int maxSize;
-    private int heapSize = 0;
-
-    public Heap(int numberOfPlaces) {
-        maxSize = numberOfPlaces; // end of the heap
-        heap = new Vertex[maxSize + 1];
-        Arrays.fill(heap, null);
+    public Heap() {
+        heap = new ArrayList<>();
     }
 
-    public void put(Vertex node, int shortestTime) {
-        if (heapSize != maxSize) {
-            heapSize++;
-            int i = heapSize;
-            node.setVertexWeight(shortestTime);
-            while (i > 0 && heap[i / 2] != null && heap[i / 2].getVertexWeight() < shortestTime) {
-                heap[i] = heap[i / 2];
-                i = i / 2;
+    private int parentNode(int i) {
+        // if i is already a root node
+        if (i == 0) {
+            return 0;
+        }
+        // position of parent node
+        return (i - 1) / 2;
+    }
+
+    private int leftNode(int i) {
+        // position of left node
+        return (2 * i + 1);
+    }
+
+    private int rightNode(int i) {
+        // position of the right node
+        return (2 * i + 2);
+    }
+
+    private void swap(int x, int y) {
+        // swap values at two indexes
+        Edge temp = heap.get(x);
+        heap.set(x, heap.get(y));
+        heap.set(y, temp);
+    }
+
+    private void heapifyDown(int i) {
+        int left = leftNode(i);
+        int right = rightNode(i);
+
+        int smallest = i;
+
+        // compare heap value at 'i' with its left and right child node and find
+        // smallest value
+        if (left < size() && heap.get(left).getWeight() < heap.get(i).getWeight()) {
+            smallest = left;
+        }
+        if (right < size() && heap.get(right).getWeight() < heap.get(smallest).getWeight()) {
+            smallest = right;
+        }
+        if (smallest != i) {
+            // swap with child having smaller value
+            swap(i, smallest);
+            // call heapifyDown on the child
+            heapifyDown(smallest);
+        }
+    }
+
+    private void heapifyUp(int i) {
+        if (i > 0 && heap.get(parentNode(i)).getWeight() > heap.get(i).getWeight()) {
+            // swap the two if heap property is violated
+            swap(i, parentNode(i));
+            heapifyUp(parentNode(i));
+        }
+    }
+
+    public int size() {
+        return heap.size();
+    }
+
+    public Boolean isEmpty() {
+        return heap.isEmpty();
+    }
+
+    // insert specified edge into the heap
+    public void put(Edge edge, int weight) {
+        edge.setWeight(weight);
+        heap.add(edge);
+        int index = size() - 1;
+        heapifyUp(index);
+    }
+
+    public Edge get() {
+        try {
+            // if heap is empty, throw an exception
+            if (size() == 0) {
+                throw new Exception("Index out of range(Heap underflow)");
             }
-            heap[i] = node;
+            Edge root = heap.get(0);
+            // replace root of the heap with the last element of the list
+            heap.set(0, heap.get(size() - 1));
+            heap.remove(size() - 1);
+
+            // call heapifyDown on root node
+            heapifyDown(0);
+
+            return root;
+        } catch (Exception ex) {
+            System.out.println(ex);
+            return null;
         }
     }
 
-    private void heapify() {
+    public void clear() {
+        System.out.print("Removing heap: ");
+        while (!heap.isEmpty()) {
+            System.out.print(get() + " ");
+        }
+        System.out.println();
     }
 
-    public Vertex get() {
-        int i = 1, j;
-        Vertex element = heap[i];
-        if (heapSize > 0) {
-            do {
-                j = 2 * i;
-                if (j < heapSize) {
-                    if (heap[j] != null && heap[j + 1] != null
-                            && heap[j].getVertexWeight() < heap[j + 1].getVertexWeight()) {
-                        j++;
-                    }
-                    if (heap[heapSize] != null && heap[j] != null
-                            && heap[heapSize].getVertexWeight() < heap[j].getVertexWeight()) {
-                        heap[i] = heap[j];
-                        i = j;
-                    } else {
-                        heap[i] = heap[heapSize] != null ? heap[heapSize] : heap[i];
-                    }
-                } else {
-                    heap[i] = heap[heapSize] != null ? heap[heapSize] : heap[i];
-                }
-            } while (heap[i] != null && heap[heapSize] != null
-                    && heap[i].getVertexWeight() != heap[heapSize].getVertexWeight());
-            heapSize--;
-        }
-        System.out.println(heapSize);
-        return element;
+    // returns true if heap contains the specified element
+    public boolean contains(Edge edge) {
+        return heap.contains(edge);
     }
 }

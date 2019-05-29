@@ -7,13 +7,13 @@ public class Vertex {
 
     public static final int CHANGE_STATION_TIME = 5;
     private List<Edge> neighbors = null;
-    private int vertexWeight;
+    private int weight;
 
     private String name;
 
     public Vertex(String name) {
         this.name = name;
-        this.vertexWeight = 0;
+        this.weight = 0;
     }
 
     public void setName(String name) {
@@ -24,12 +24,12 @@ public class Vertex {
         return this.name;
     }
 
-    public int getVertexWeight() {
-        return this.vertexWeight;
+    public int getWeight() {
+        return this.weight;
     }
 
-    public void setVertexWeight(int weight) {
-        this.vertexWeight = weight;
+    public void setWeight(int weight) {
+        this.weight = weight;
     }
 
     /**

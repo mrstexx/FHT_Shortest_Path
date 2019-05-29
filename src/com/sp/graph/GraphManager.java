@@ -69,22 +69,43 @@ public class GraphManager {
                 for (int i = 1; i < parsedLine.size(); i += 2) {
                     // iterate each second because from the input format, between is the weight of
                     // the edge
-                    Vertex node = new Vertex(parsedLine.get(i));
+                    Vertex node = null;
+                    boolean disabled = false;
+                    if (graph.getVertex(parsedLine.get(i)) != null) {
+                        node = graph.getVertex(parsedLine.get(i));
+                        disabled = true;
+                    } else {
+                        node = new Vertex(parsedLine.get(i));
+                    }
                     Edge edge = null;
                     Vertex destinationNode = null;
                     if (i + 1 < parsedLine.size()) {
                         // first create edge in one direction
-                        destinationNode = new Vertex(parsedLine.get(i + 2));
-                        edge = new Edge(destinationNode, Integer.parseInt(parsedLine.get(i + 1)), lineName);
+                        // check does destination already exists
+                        if (graph.getVertex(parsedLine.get(i + 2)) != null) {
+                            destinationNode = graph.getVertex(parsedLine.get(i + 2));
+                        } else {
+                            destinationNode = new Vertex(parsedLine.get(i + 2));
+                            graph.addVertex(destinationNode);
+                        }
+                        edge = new Edge(node, destinationNode, Integer.parseInt(parsedLine.get(i + 1)), lineName);
                         node.addEdge(edge);
                     }
                     if (i - 1 > 0) {
                         // then create edge in another direction
-                        destinationNode = new Vertex(parsedLine.get(i - 2));
-                        edge = new Edge(destinationNode, Integer.parseInt(parsedLine.get(i - 1)), lineName);
+                        // check does destination already exists
+                        if (graph.getVertex(parsedLine.get(i - 2)) != null) {
+                            destinationNode = graph.getVertex(parsedLine.get(i - 2));
+                        } else {
+                            destinationNode = new Vertex(parsedLine.get(i - 2));
+                            graph.addVertex(destinationNode);
+                        }
+                        edge = new Edge(node, destinationNode, Integer.parseInt(parsedLine.get(i - 1)), lineName);
                         node.addEdge(edge);
                     }
-                    graph.addVertex(node);
+                    if (!disabled) {
+                        graph.addVertex(node);
+                    }
                 }
             }
         } catch (IOException e) {
@@ -104,5 +125,4 @@ public class GraphManager {
         }
         return parsedList;
     }
-
 }

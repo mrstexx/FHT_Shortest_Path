@@ -34,29 +34,33 @@ public class Graph {
     }
 
     /**
-     * Function used to find shortest path and time between all nodes
+     * Function used to find shortest path and time between two nodes
      * 
      * @param startNode        Node from where to find path
      * @param endNode          Node until where to find path
      * @param maxNumberOfNodes Max number of all nodes used for head init
      */
     public void findShortestPath(Vertex startNode, Vertex endNode) {
-        Heap heap = new Heap(this.vertices.size());
+        Heap heap = new Heap();
+        // mark visited
         ArrayList<String> visited = new ArrayList<>();
         int shortestTime = 0;
         do {
             visited.add(startNode.getName());
             if (startNode.getAllNeighbors() != null) {
                 for (Edge neighbour : startNode.getAllNeighbors()) {
-                    if (!containsList(visited, neighbour.getDestinationVertex().getName())) {
-                        heap.put(neighbour.getDestinationVertex(), neighbour.getWeight() + shortestTime);
+                    if (!containsList(visited, neighbour.getDestination().getName())) {
+                        heap.put(neighbour, neighbour.getWeight() + shortestTime);
                     }
                 }
             }
             do {
-                startNode = heap.get();
-                if (startNode != null) {
-                    shortestTime += startNode.getVertexWeight();
+                Edge edge = heap.get();
+                if (edge != null) {
+                    startNode = edge.getDestination();
+                    if (startNode != null) {
+                        shortestTime += edge.getWeight();
+                    }
                 }
             } while (startNode != null && containsList(visited, startNode.getName()));
         } while (startNode != null && !startNode.getName().equals(endNode.getName()));
@@ -113,7 +117,7 @@ public class Graph {
             System.out.print(node.getName() + " -> ");
             if (node.getAllNeighbors() != null) {
                 for (Edge edge : node.getAllNeighbors()) {
-                    System.out.print(edge.getDestinationVertex().getName() + " -> ");
+                    System.out.print(edge.getDestination().getName() + " -> ");
                 }
                 System.out.println("null");
             }
