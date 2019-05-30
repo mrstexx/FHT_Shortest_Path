@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,22 +25,26 @@ public class GraphManager {
      */
     public List<Vertex> getShortestPath(String startNodeName, String endNodeName) {
         // TODO add real values
-        Vertex startNode = graph.getVertex("Spittelau");
-        Vertex endNode = graph.getVertex("Thaliastrasse");
+        Vertex startNode = graph.getVertex("Alser Strasse");
+        Vertex endNode = graph.getVertex("Volkstheater");
         if (startNode != null && endNode != null) {
             graph.findShortestPath(startNode, endNode);
             int shortestTime = graph.getShortestTime();
-            List<Vertex> resultData = graph.getShortestPathNodes();
+            Stack<Vertex> stackData = graph.getShortestPathNodes();
+            List<Vertex> resultData = new ArrayList<>();
+            if (resultData != null) {
+                System.out.println("-----------");
+                System.out.println("Shortest time: " + shortestTime);
+                System.out.println("-----------");
+                System.out.println("List of stations: ");
+                while (!stackData.isEmpty()) {
+                    Vertex node = stackData.pop();
+                    System.out.println(node.getName());
+                    resultData.add(node);
+                }
 
-            // if (resultData != null) {
-            System.out.println("-----------");
-            System.out.println("Shortest time: " + shortestTime);
-            /*
-             * System.out.println("List of stations: "); for (Vertex node : resultData) {
-             * System.out.println(node.getName()); }
-             */
-            System.out.println("-----------");
-            // }
+                System.out.println("-----------");
+            }
 
             // TODO Fit gui with end data
             if (resultData != null) {

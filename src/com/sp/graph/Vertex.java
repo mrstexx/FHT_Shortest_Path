@@ -6,14 +6,16 @@ import java.util.List;
 public class Vertex {
 
     public static final int CHANGE_STATION_TIME = 5;
+    public boolean isVisited = false;
+    private Vertex parentNode = null;
     private List<Edge> neighbors = null;
-    private int weight;
+    private int distance;
 
     private String name;
 
     public Vertex(String name) {
         this.name = name;
-        this.weight = 0;
+        this.distance = Integer.MAX_VALUE;
     }
 
     public void setName(String name) {
@@ -24,12 +26,20 @@ public class Vertex {
         return this.name;
     }
 
-    public int getWeight() {
-        return this.weight;
+    public int getDistance() {
+        return this.distance;
     }
 
-    public void setWeight(int weight) {
-        this.weight = weight;
+    public void setDistance(int distance) {
+        this.distance = distance;
+    }
+
+    public Vertex getParentNode() {
+        return this.parentNode;
+    }
+
+    public void setParentNode(Vertex parentNode) {
+        this.parentNode = parentNode;
     }
 
     /**

@@ -85,6 +85,7 @@ public class WindowController {
             showAlertMessage(message, title, AlertType.ERROR);
             return;
         }
+        this.resultArea.setText("");
         String outputResult = "";
         List<Vertex> result = null;
         if (graphManager != null) {

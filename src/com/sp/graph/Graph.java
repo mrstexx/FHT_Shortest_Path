@@ -2,15 +2,17 @@ package com.sp.graph;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 public class Graph {
 
     private List<Vertex> vertices;
     private int shortestTime;
-    private List<Vertex> shortestPathNodes;
+    private Stack<Vertex> shortestPathNodes;
 
     public Graph() {
-        vertices = new ArrayList<Vertex>();
+        vertices = new ArrayList<>();
+        shortestPathNodes = new Stack<>();
     }
 
     /**
@@ -36,44 +38,46 @@ public class Graph {
     /**
      * Function used to find shortest path and time between two nodes
      * 
-     * @param startNode        Node from where to find path
-     * @param endNode          Node until where to find path
-     * @param maxNumberOfNodes Max number of all nodes used for head init
+     * @param startNode Node from where to find path
+     * @param endNode   Node until where to find path
      */
     public void findShortestPath(Vertex startNode, Vertex endNode) {
         Heap heap = new Heap();
-        // mark visited
-        ArrayList<String> visited = new ArrayList<>();
-        int shortestTime = 0;
-        do {
-            visited.add(startNode.getName());
-            if (startNode.getAllNeighbors() != null) {
-                for (Edge neighbour : startNode.getAllNeighbors()) {
-                    if (!containsList(visited, neighbour.getDestination().getName())) {
-                        heap.put(neighbour, neighbour.getWeight() + shortestTime);
-                    }
-                }
+        heap.put(startNode, 0);
+        while (!heap.isEmpty()) {
+            Vertex extractedNode = heap.get();
+            if (extractedNode.getName().equals(endNode.getName())) {
+                break;
             }
-            do {
-                Edge edge = heap.get();
-                if (edge != null) {
-                    startNode = edge.getDestination();
-                    if (startNode != null) {
-                        shortestTime += edge.getWeight();
-                    }
-                }
-            } while (startNode != null && containsList(visited, startNode.getName()));
-        } while (startNode != null && !startNode.getName().equals(endNode.getName()));
-        this.shortestTime = shortestTime;
+
+            List<Edge> neighbors = extractedNode.getAllNeighbors();
+            checkNeighbors(neighbors, heap);
+        }
+        setShortestNodes(endNode);
+        this.shortestTime = endNode.getDistance();
     }
 
-    private boolean containsList(List<String> list, String name) {
-        for (String entry : list) {
-            if (name.equals(entry)) {
-                return true;
+    private void checkNeighbors(List<Edge> neighbors, Heap heap) {
+        for (Edge neighbour : neighbors) {
+            Vertex sourceNode = neighbour.getSource();
+            Vertex destinationNode = neighbour.getDestination();
+            int weight = neighbour.getWeight();
+            int nodeDistance = weight + sourceNode.getDistance();
+            if (nodeDistance < destinationNode.getDistance()) {
+                destinationNode.setParentNode(sourceNode);
+                if (!destinationNode.isVisited) {
+                    heap.put(destinationNode, nodeDistance);
+                    destinationNode.isVisited = true;
+                }
             }
         }
-        return false;
+    }
+
+    private void setShortestNodes(Vertex node) {
+        while (node != null) {
+            this.shortestPathNodes.push(node);
+            node = node.getParentNode();
+        }
     }
 
     /**
@@ -124,11 +128,17 @@ public class Graph {
         }
     }
 
+    /**
+     * @return Shortest time
+     */
     public int getShortestTime() {
         return this.shortestTime;
     }
 
-    public List<Vertex> getShortestPathNodes() {
+    /**
+     * @return List of all stations between two entered nodes
+     */
+    public Stack<Vertex> getShortestPathNodes() {
         return this.shortestPathNodes;
     }
 }

@@ -6,7 +6,7 @@ import java.util.ArrayList;
  * Implementation of min heap
  */
 public class Heap {
-    private ArrayList<Edge> heap;
+    private ArrayList<Vertex> heap;
 
     public Heap() {
         heap = new ArrayList<>();
@@ -33,7 +33,7 @@ public class Heap {
 
     private void swap(int x, int y) {
         // swap values at two indexes
-        Edge temp = heap.get(x);
+        Vertex temp = heap.get(x);
         heap.set(x, heap.get(y));
         heap.set(y, temp);
     }
@@ -46,10 +46,10 @@ public class Heap {
 
         // compare heap value at 'i' with its left and right child node and find
         // smallest value
-        if (left < size() && heap.get(left).getWeight() < heap.get(i).getWeight()) {
+        if (left < size() && heap.get(left).getDistance() < heap.get(i).getDistance()) {
             smallest = left;
         }
-        if (right < size() && heap.get(right).getWeight() < heap.get(smallest).getWeight()) {
+        if (right < size() && heap.get(right).getDistance() < heap.get(smallest).getDistance()) {
             smallest = right;
         }
         if (smallest != i) {
@@ -61,7 +61,7 @@ public class Heap {
     }
 
     private void heapifyUp(int i) {
-        if (i > 0 && heap.get(parentNode(i)).getWeight() > heap.get(i).getWeight()) {
+        if (i > 0 && heap.get(parentNode(i)).getDistance() > heap.get(i).getDistance()) {
             // swap the two if heap property is violated
             swap(i, parentNode(i));
             heapifyUp(parentNode(i));
@@ -76,21 +76,21 @@ public class Heap {
         return heap.isEmpty();
     }
 
-    // insert specified edge into the heap
-    public void put(Edge edge, int weight) {
-        edge.setWeight(weight);
-        heap.add(edge);
+    // insert specified vertex into the heap
+    public void put(Vertex node, int distance) {
+        node.setDistance(distance);
+        heap.add(node);
         int index = size() - 1;
         heapifyUp(index);
     }
 
-    public Edge get() {
+    public Vertex get() {
         try {
             // if heap is empty, throw an exception
             if (size() == 0) {
                 throw new Exception("Index out of range(Heap underflow)");
             }
-            Edge root = heap.get(0);
+            Vertex root = heap.get(0);
             // replace root of the heap with the last element of the list
             heap.set(0, heap.get(size() - 1));
             heap.remove(size() - 1);
@@ -114,7 +114,7 @@ public class Heap {
     }
 
     // returns true if heap contains the specified element
-    public boolean contains(Edge edge) {
-        return heap.contains(edge);
+    public boolean contains(Vertex node) {
+        return heap.contains(node);
     }
 }
