@@ -95,6 +95,7 @@ public class WindowController {
             for (Vertex node : result) {
                 outputResult += node.getName() + "\n";
             }
+            outputResult += "\nShortest time: " + graphManager.getShortestTime();
             this.resultArea.setText(outputResult);
         }
     }

@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
 public class GraphManager {
 
     private Graph graph;
+    private String shortestTime;
 
     public GraphManager() {
         graph = new Graph();
@@ -25,28 +26,21 @@ public class GraphManager {
      */
     public List<Vertex> getShortestPath(String startNodeName, String endNodeName) {
         // TODO add real values
-        Vertex startNode = graph.getVertex("Alser Strasse");
-        Vertex endNode = graph.getVertex("Volkstheater");
+        Vertex startNode = graph.getVertex(startNodeName);
+        Vertex endNode = graph.getVertex(endNodeName);
         if (startNode != null && endNode != null) {
             graph.findShortestPath(startNode, endNode);
-            int shortestTime = graph.getShortestTime();
+            setShortestTime(graph.getShortestTime());
             Stack<Vertex> stackData = graph.getShortestPathNodes();
             List<Vertex> resultData = new ArrayList<>();
-            if (resultData != null) {
-                System.out.println("-----------");
-                System.out.println("Shortest time: " + shortestTime);
-                System.out.println("-----------");
-                System.out.println("List of stations: ");
+            if (stackData != null) {
                 while (!stackData.isEmpty()) {
                     Vertex node = stackData.pop();
                     System.out.println(node.getName());
                     resultData.add(node);
                 }
-
-                System.out.println("-----------");
             }
 
-            // TODO Fit gui with end data
             if (resultData != null) {
                 return resultData;
             }
@@ -70,54 +64,70 @@ public class GraphManager {
                     continue;
                 }
                 ArrayList<String> parsedLine = getParsedString(line);
-                String lineName = parsedLine.get(0);
-                for (int i = 1; i < parsedLine.size(); i += 2) {
-                    // iterate each second because from the input format, between is the weight of
-                    // the edge
-                    Vertex node = null;
-                    boolean disabled = false;
-                    if (graph.getVertex(parsedLine.get(i)) != null) {
-                        node = graph.getVertex(parsedLine.get(i));
-                        disabled = true;
-                    } else {
-                        node = new Vertex(parsedLine.get(i));
-                    }
-                    Edge edge = null;
-                    Vertex destinationNode = null;
-                    if (i + 1 < parsedLine.size()) {
-                        // first create edge in one direction
-                        // check does destination already exists
-                        if (graph.getVertex(parsedLine.get(i + 2)) != null) {
-                            destinationNode = graph.getVertex(parsedLine.get(i + 2));
-                        } else {
-                            destinationNode = new Vertex(parsedLine.get(i + 2));
-                            graph.addVertex(destinationNode);
-                        }
-                        edge = new Edge(node, destinationNode, Integer.parseInt(parsedLine.get(i + 1)), lineName);
-                        node.addEdge(edge);
-                    }
-                    if (i - 1 > 0) {
-                        // then create edge in another direction
-                        // check does destination already exists
-                        if (graph.getVertex(parsedLine.get(i - 2)) != null) {
-                            destinationNode = graph.getVertex(parsedLine.get(i - 2));
-                        } else {
-                            destinationNode = new Vertex(parsedLine.get(i - 2));
-                            graph.addVertex(destinationNode);
-                        }
-                        edge = new Edge(node, destinationNode, Integer.parseInt(parsedLine.get(i - 1)), lineName);
-                        node.addEdge(edge);
-                    }
-                    if (!disabled) {
-                        graph.addVertex(node);
-                    }
-                }
+                iterateLines(parsedLine);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
         // TODO temp for debugging to have overview of created edges between vertices
         graph.printAll();
+    }
+    
+    private void iterateLines(List<String> parsedLine) {
+        String lineName = parsedLine.get(0);
+        for (int i = 1; i < parsedLine.size(); i += 2) {
+            // iterate each second because from the input format, between is the weight of
+            // the edge
+            Vertex node = null;
+            boolean disabled = false;
+            if (graph.getVertex(parsedLine.get(i)) != null) {
+                node = graph.getVertex(parsedLine.get(i));
+                disabled = true;
+            } else {
+                node = new Vertex(parsedLine.get(i));
+            }
+            Edge edge = null;
+            Vertex destinationNode = null;
+            if (i + 1 < parsedLine.size()) {
+                // first create edge in one direction
+                // check does destination already exists
+                if (graph.getVertex(parsedLine.get(i + 2)) != null) {
+                    destinationNode = graph.getVertex(parsedLine.get(i + 2));
+                } else {
+                    destinationNode = new Vertex(parsedLine.get(i + 2));
+                    graph.addVertex(destinationNode);
+                }
+                edge = new Edge(node, destinationNode, Integer.parseInt(parsedLine.get(i + 1)), lineName);
+                node.addEdge(edge);
+            }
+            if (i - 1 > 0) {
+                // then create edge in another direction
+                // check does destination already exists
+                if (graph.getVertex(parsedLine.get(i - 2)) != null) {
+                    destinationNode = graph.getVertex(parsedLine.get(i - 2));
+                } else {
+                    destinationNode = new Vertex(parsedLine.get(i - 2));
+                    graph.addVertex(destinationNode);
+                }
+                edge = new Edge(node, destinationNode, Integer.parseInt(parsedLine.get(i - 1)), lineName);
+                node.addEdge(edge);
+            }
+            // avoid adding double nodes to map
+            if (!disabled) {
+                graph.addVertex(node);
+            }
+        }
+    }
+    
+    private void setShortestTime(int timeInMinutes) {
+        this.shortestTime = timeInMinutes + " minutes";
+    }
+    
+    /**
+     * @return Formated shortest time
+     */
+    public String getShortestTime() {
+        return this.shortestTime;
     }
 
     private static ArrayList<String> getParsedString(String inputLine) {

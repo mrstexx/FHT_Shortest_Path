@@ -1,17 +1,18 @@
 package com.sp.graph;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Stack;
 
 public class Graph {
 
-    private List<Vertex> vertices;
+    private Map<String, Vertex> vertices;
     private int shortestTime;
     private Stack<Vertex> shortestPathNodes;
 
     public Graph() {
-        vertices = new ArrayList<>();
+        vertices = new HashMap<>();
         shortestPathNodes = new Stack<>();
     }
 
@@ -23,7 +24,7 @@ public class Graph {
     public void addVertex(Vertex node) {
         // check if vertex with passed name is existing, if not than add new vertex
         if (!contains(node.getName())) {
-            vertices.add(node);
+            vertices.put(node.getName(), node);
             return;
         }
         // if it is existing, then go through edges and add them to existing vertex
@@ -85,10 +86,8 @@ public class Graph {
      * @return returns true if vertex exists, otherwise false
      */
     public boolean contains(String name) {
-        for (Vertex node : this.vertices) {
-            if (node.getName().equals(name)) {
-                return true;
-            }
+        if (this.vertices.get(name) != null) {
+            return true;
         }
         return false;
     }
@@ -98,10 +97,8 @@ public class Graph {
      * @return returns vertex if existing or null
      */
     public Vertex getVertex(String name) {
-        for (Vertex node : this.vertices) {
-            if (node.getName().equals(name)) {
-                return node;
-            }
+        if (this.vertices.get(name) != null) {
+            return this.vertices.get(name);
         }
         return null;
     }
@@ -109,7 +106,7 @@ public class Graph {
     /**
      * @return Returns list of all graph vertices
      */
-    public List<Vertex> getAllVertices() {
+    public Map<String, Vertex> getAllVertices() {
         return this.vertices;
     }
 
@@ -117,10 +114,10 @@ public class Graph {
      * Print all vertices and edges
      */
     public void printAll() {
-        for (Vertex node : this.vertices) {
-            System.out.print(node.getName() + " -> ");
-            if (node.getAllNeighbors() != null) {
-                for (Edge edge : node.getAllNeighbors()) {
+        for (Map.Entry<String, Vertex> nodeEntry : this.vertices.entrySet()) {
+            System.out.print(nodeEntry.getKey() + " -> ");
+            if (((Vertex) nodeEntry.getValue()).getAllNeighbors() != null) {
+                for (Edge edge : ((Vertex) nodeEntry.getValue()).getAllNeighbors()) {
                     System.out.print(edge.getDestination().getName() + " -> ");
                 }
                 System.out.println("null");

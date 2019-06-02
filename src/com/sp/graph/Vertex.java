@@ -59,5 +59,9 @@ public class Vertex {
     public List<Edge> getAllNeighbors() {
         return this.neighbors;
     }
-
+    
+    @Override
+    public int hashCode() {
+        return name.hashCode();
+    }
 }
