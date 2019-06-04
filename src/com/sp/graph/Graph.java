@@ -10,6 +10,8 @@ public class Graph {
     private Map<String, Vertex> vertices;
     private int shortestTime;
     private Stack<Vertex> shortestPathNodes;
+    private Map<String, Boolean> visited;
+    private String prevLine = "";
 
     public Graph() {
         vertices = new HashMap<>();
@@ -43,6 +45,7 @@ public class Graph {
      * @param endNode   Node until where to find path
      */
     public void findShortestPath(Vertex startNode, Vertex endNode) {
+        visited = new HashMap<String, Boolean>();
         Heap heap = new Heap();
         heap.put(startNode, 0);
         while (!heap.isEmpty()) {
@@ -56,6 +59,7 @@ public class Graph {
         }
         setShortestNodes(endNode);
         this.shortestTime = endNode.getDistance();
+        resetVisitedNodes();
     }
 
     private void checkNeighbors(List<Edge> neighbors, Heap heap) {
@@ -64,12 +68,27 @@ public class Graph {
             Vertex destinationNode = neighbour.getDestination();
             int weight = neighbour.getWeight();
             int nodeDistance = weight + sourceNode.getDistance();
+            /*
+             * if (!prevLine.equals(neighbour.getEdgeName()) && !prevLine.equals("")) {
+             * nodeDistance += Vertex.CHANGE_STATION_TIME; }
+             */
             if (nodeDistance < destinationNode.getDistance()) {
                 destinationNode.setParentNode(sourceNode);
-                if (!destinationNode.isVisited) {
+                if (visited.get(destinationNode.getName()) == null) {
                     heap.put(destinationNode, nodeDistance);
-                    destinationNode.isVisited = true;
+                    visited.put(destinationNode.getName(), true);
                 }
+            }
+            prevLine = neighbour.getEdgeName();
+        }
+    }
+    
+    private void resetVisitedNodes() {
+        for (Map.Entry<String, Vertex> entry : vertices.entrySet()) {
+            Vertex node = getVertex(entry.getKey());
+            if (node != null) {
+                node.setDistance(Integer.MAX_VALUE);
+                node.setParentNode(null);
             }
         }
     }
