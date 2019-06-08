@@ -87,11 +87,9 @@ public class Heap {
     /**
      * Insert vertex node to the heap
      *
-     * @param node     Node to be added in the heap
-     * @param distance New distance from the source
+     * @param node Node to be added in the heap
      */
-    public void put(Vertex node, int distance) {
-        node.setDistance(distance);
+    public void put(Vertex node) {
         heap.add(node);
         int index = size() - 1;
         heapifyUp(index);

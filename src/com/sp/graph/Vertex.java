@@ -6,6 +6,7 @@ import java.util.List;
 public class Vertex {
 
     public static final int CHANGE_LINE_TIME = 5;
+    public boolean isVisited = false;
     private Vertex parentNode = null;
     private List<Edge> neighbors = null;
     private int distance;

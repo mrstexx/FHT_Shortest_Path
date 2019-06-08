@@ -1,7 +1,6 @@
 package com.sp.graph;
 
 import com.sun.istack.internal.Nullable;
-import sun.misc.Version;
 
 import java.util.HashMap;
 import java.util.List;
@@ -13,7 +12,6 @@ public class Graph {
     private Map<String, Vertex> vertices;
     private int shortestTime;
     private Stack<Vertex> shortestPathNodes;
-    private Map<String, Boolean> visited;
 
     public Graph() {
         vertices = new HashMap<>();
@@ -48,11 +46,15 @@ public class Graph {
      * @param endNode   Node until where to find path
      */
     public void findShortestPath(Vertex startNode, Vertex endNode) {
-        visited = new HashMap<String, Boolean>();
         Heap heap = new Heap();
-        heap.put(startNode, 0);
+        startNode.setDistance(0);
+        heap.put(startNode);
+
+        System.out.println("---------------");
+
         while (!heap.isEmpty()) {
             Vertex extractedNode = heap.get();
+            //System.out.println("***" + extractedNode.getName() + " : " + extractedNode.getDistance());
             if (extractedNode.getName().equals(endNode.getName())) {
                 break;
             }
@@ -70,32 +72,93 @@ public class Graph {
             Vertex sourceNode = edge.getSource();
             Vertex destinationNode = edge.getDestination();
 
-            int nodeDistance = edge.getWeight() + sourceNode.getDistance();
+            // in case one is visited, but after switching another node has better distance
+            if (!destinationNode.isVisited) {
+                int weight = edge.getWeight();
 
-            if (visited.get(destinationNode.getName()) == null) {
+                if (sourceNode.getName().equals(destinationNode.getName()) && sourceNode.getParentNode() == null) {
+                    weight = 0;
+                } else if (sourceNode.getName().equals(destinationNode.getName()) && sourceNode.getParentNode() != null) {
+                    if (!detectChangeDirection(sourceNode, edge.getEdgeName())) {
+                        weight = 0;
+                    }
+                }
 
-                // destinationNode.setCurrentLineName(neighbour.getEdgeName());
+                int nodeDistance = weight + sourceNode.getDistance();
 
-                if (detectChangeDirection(sourceNode, destinationNode, edge.getEdgeName())) {
+                if (detectChangeDirection(sourceNode, edge.getEdgeName())) {
                     nodeDistance += Vertex.CHANGE_LINE_TIME;
                 }
 
-                if (nodeDistance < destinationNode.getDistance()) {
+                if (nodeDistance <= destinationNode.getDistance()) {
                     destinationNode.setParentNode(sourceNode);
-                    heap.put(destinationNode, nodeDistance);
-                    visited.put(destinationNode.getName(), true);
+                    destinationNode.setDistance(nodeDistance);
+                    heap.put(destinationNode);
+                    destinationNode.isVisited = true;
                 }
             }
         }
     }
 
-    private boolean detectChangeDirection(Vertex startNode, Vertex endNode, String currentEdgeName) {
+    // first implementation of dijkstra
+    private void _findShortestPath(Vertex startNode, Vertex endNode) {
+        Heap heap = new Heap();
+        int minDistance = 0;
+        do {
+            startNode.isVisited = true;
+            for (Edge edge : startNode.getAllNeighbors()) {
+                Vertex sourceNode = edge.getSource();
+                Vertex destinationNode = edge.getDestination();
+                if (!destinationNode.isVisited) {
+                    int weight = edge.getWeight();
+
+                    // check for same stations
+                    if (sourceNode.getName().equals(destinationNode.getName()) && startNode.getParentNode() == null) {
+                        weight = 0;
+                    } else if (sourceNode.getName().equals(destinationNode.getName()) && startNode.getParentNode() != null) {
+                        if (!detectChangeDirection(startNode, edge.getEdgeName())) {
+                            weight = 0;
+                        }
+                    }
+
+                    if (detectChangeDirection(startNode, edge.getEdgeName())) {
+                        weight += Vertex.CHANGE_LINE_TIME;
+                    }
+
+                    weight += minDistance;
+
+                    if (destinationNode.getParentNode() == null) {
+                        destinationNode.setParentNode(startNode);
+                        destinationNode.setDistance(weight);
+                    } else {
+                        if (weight <= destinationNode.getDistance()) {
+                            destinationNode.setParentNode(startNode);
+                            destinationNode.setDistance(weight);
+                        }
+                    }
+                    heap.put(destinationNode);
+                }
+            }
+            do {
+                if (!heap.isEmpty()) {
+                    Vertex extractedNode = heap.get();
+                    minDistance = extractedNode.getDistance();
+                    startNode = extractedNode;
+                }
+            } while (startNode.isVisited);
+        } while (!startNode.getName().equals(endNode.getName()));
+        this.shortestTime = minDistance;
+        setShortestNodes(endNode);
+        resetNodes();
+    }
+
+    private boolean detectChangeDirection(Vertex startNode, String currentEdgeName) {
         if (startNode.getParentNode() != null) {
             Edge edge = getEdgeBetweenTwoStations(startNode.getParentNode(), startNode);
             if (edge == null) {
                 return false;
             }
-            return edge.getEdgeName().equals(currentEdgeName);
+            return !edge.getEdgeName().equals(currentEdgeName);
         }
         return false;
     }
@@ -106,6 +169,7 @@ public class Graph {
             Vertex node = getVertex(entry.getKey());
             if (node != null) {
                 node.setDistance(Integer.MAX_VALUE);
+                node.isVisited = false;
                 node.setParentNode(null);
                 node.setCurrentLineName("");
             }
@@ -141,6 +205,7 @@ public class Graph {
 
     private void setShortestNodes(Vertex node) {
         while (node != null) {
+            System.out.println(node.getName() + " : " + node.getDistance());
             this.shortestPathNodes.push(new Vertex(node));
             node = node.getParentNode();
         }
