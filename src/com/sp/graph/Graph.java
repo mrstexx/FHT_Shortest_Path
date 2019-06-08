@@ -45,7 +45,7 @@ public class Graph {
      * @param startNode Node from where to find path
      * @param endNode   Node until where to find path
      */
-    public void findShortestPath(Vertex startNode, Vertex endNode) {
+    public void _findShortestPath(Vertex startNode, Vertex endNode) {
         Heap heap = new Heap();
         startNode.setDistance(0);
         heap.put(startNode);
@@ -101,7 +101,7 @@ public class Graph {
     }
 
     // first implementation of dijkstra
-    private void _findShortestPath(Vertex startNode, Vertex endNode) {
+    public void findShortestPath(Vertex startNode, Vertex endNode) {
         Heap heap = new Heap();
         int minDistance = 0;
         do {
@@ -148,7 +148,9 @@ public class Graph {
             } while (startNode.isVisited);
         } while (!startNode.getName().equals(endNode.getName()));
         this.shortestTime = minDistance;
+        // got over parent nodes in order to reverse them
         setShortestNodes(endNode);
+        // reset all values after in order to have default state for the next search
         resetNodes();
     }
 
@@ -206,8 +208,17 @@ public class Graph {
     private void setShortestNodes(Vertex node) {
         while (node != null) {
             System.out.println(node.getName() + " : " + node.getDistance());
+            correctLineName(node);
             this.shortestPathNodes.push(new Vertex(node));
             node = node.getParentNode();
+        }
+    }
+
+    private void correctLineName(Vertex node) {
+        if (node.getParentNode() != null) {
+            Edge line = getEdgeBetweenTwoStations(node.getParentNode(), node);
+            node.setCurrentLineName(line.getEdgeName());
+            node.getParentNode().setCurrentLineName(line.getEdgeName());
         }
     }
 
