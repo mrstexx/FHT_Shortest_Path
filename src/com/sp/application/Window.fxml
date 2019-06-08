@@ -13,67 +13,67 @@
 <?import javafx.scene.text.Font?>
 
 <VBox prefHeight="400.0" prefWidth="640.0"
-	xmlns="http://javafx.com/javafx/8.0.171"
-	xmlns:fx="http://javafx.com/fxml/1"
-	fx:controller="com.sp.application.WindowController">
-	<children>
-		<MenuBar VBox.vgrow="NEVER">
-			<menus>
-				<Menu mnemonicParsing="false" text="File">
-					<items>
-						<MenuItem fx:id="menuImportNewData"
-							mnemonicParsing="false" onAction="#importNewData"
-							text="Import new data" />
-						<MenuItem fx:id="menuCloseWindow" mnemonicParsing="false"
-							onAction="#closeWindow" text="Quit" />
-					</items>
-				</Menu>
-				<Menu mnemonicParsing="false" text="Help">
-					<items>
-						<MenuItem fx:id="menuAboutUs" mnemonicParsing="false"
-							onAction="#menuAbout" text="About" />
-					</items>
-				</Menu>
-			</menus>
-		</MenuBar>
-		<AnchorPane maxHeight="-1.0" maxWidth="-1.0"
-			prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
-			<children>
-				<Label fx:id="labelFileName" layoutX="14.0" layoutY="14.0"
-					text="Imported from:">
-					<font>
-						<Font size="14.0" />
-					</font>
-				</Label>
-				<Label layoutX="14.0" layoutY="47.0" text="Start Station:">
-					<font>
-						<Font size="14.0" />
-					</font>
-				</Label>
-				<Label layoutX="17.0" layoutY="89.0" text="End Station:">
-					<font>
-						<Font size="14.0" />
-					</font>
-				</Label>
-				<TextField fx:id="fieldStartStation" layoutX="108.0"
-					layoutY="45.0" prefHeight="25.0" prefWidth="290.0" />
-				<TextField fx:id="fieldEndStation" layoutX="108.0"
-					layoutY="86.0" prefHeight="25.0" prefWidth="290.0" />
-				<Button fx:id="btnGetPath" layoutX="420.0" layoutY="45.0"
-					mnemonicParsing="false" onAction="#execGetPath" prefHeight="63.0"
-					prefWidth="110.0" text="Get Path">
-					<font>
-						<Font size="14.0" />
-					</font>
-				</Button>
-				<ScrollPane layoutX="17.0" layoutY="128.0"
-					prefHeight="243.0" prefWidth="618.0">
-					<content>
-						<TextArea fx:id="resultArea" editable="false"
-							prefHeight="241.0" prefWidth="616.0" />
-					</content>
-				</ScrollPane>
-			</children>
-		</AnchorPane>
-	</children>
+      xmlns="http://javafx.com/javafx/8.0.171"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.sp.application.WindowController">
+    <children>
+        <MenuBar VBox.vgrow="NEVER">
+            <menus>
+                <Menu mnemonicParsing="false" text="File">
+                    <items>
+                        <MenuItem fx:id="menuImportNewData"
+                                  mnemonicParsing="false" onAction="#importNewData"
+                                  text="Import new data"/>
+                        <MenuItem fx:id="menuCloseWindow" mnemonicParsing="false"
+                                  onAction="#closeWindow" text="Quit"/>
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Help">
+                    <items>
+                        <MenuItem fx:id="menuAboutUs" mnemonicParsing="false"
+                                  onAction="#menuAbout" text="About"/>
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
+        <AnchorPane maxHeight="-1.0" maxWidth="-1.0"
+                    prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
+            <children>
+                <Label fx:id="labelFileName" layoutX="14.0" layoutY="14.0"
+                       text="Imported from:">
+                    <font>
+                        <Font size="14.0"/>
+                    </font>
+                </Label>
+                <Label layoutX="14.0" layoutY="47.0" text="Start Station:">
+                    <font>
+                        <Font size="14.0"/>
+                    </font>
+                </Label>
+                <Label layoutX="17.0" layoutY="89.0" text="End Station:">
+                    <font>
+                        <Font size="14.0"/>
+                    </font>
+                </Label>
+                <TextField fx:id="fieldStartStation" layoutX="108.0"
+                           layoutY="45.0" prefHeight="25.0" prefWidth="290.0"/>
+                <TextField fx:id="fieldEndStation" layoutX="108.0"
+                           layoutY="86.0" prefHeight="25.0" prefWidth="290.0"/>
+                <Button fx:id="btnGetPath" layoutX="420.0" layoutY="45.0"
+                        mnemonicParsing="false" onAction="#execGetPath" prefHeight="63.0"
+                        prefWidth="110.0" text="Get Path">
+                    <font>
+                        <Font size="14.0"/>
+                    </font>
+                </Button>
+                <ScrollPane layoutX="17.0" layoutY="128.0"
+                            prefHeight="243.0" prefWidth="618.0">
+                    <content>
+                        <TextArea fx:id="resultArea" editable="false"
+                                  prefHeight="241.0" prefWidth="616.0"/>
+                    </content>
+                </ScrollPane>
+            </children>
+        </AnchorPane>
+    </children>
 </VBox>

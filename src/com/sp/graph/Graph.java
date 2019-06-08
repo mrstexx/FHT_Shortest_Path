@@ -1,5 +1,8 @@
 package com.sp.graph;
 
+import com.sun.istack.internal.Nullable;
+import sun.misc.Version;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,7 +14,6 @@ public class Graph {
     private int shortestTime;
     private Stack<Vertex> shortestPathNodes;
     private Map<String, Boolean> visited;
-    private String prevLine = "";
 
     public Graph() {
         vertices = new HashMap<>();
@@ -20,7 +22,7 @@ public class Graph {
 
     /**
      * Function used to add new Vertex to the graph
-     * 
+     *
      * @param node vertex to be added in the graph
      */
     public void addVertex(Vertex node) {
@@ -40,7 +42,8 @@ public class Graph {
 
     /**
      * Function used to find shortest path and time between two nodes
-     * 
+     * Run Dijkstra!
+     *
      * @param startNode Node from where to find path
      * @param endNode   Node until where to find path
      */
@@ -59,43 +62,86 @@ public class Graph {
         }
         setShortestNodes(endNode);
         this.shortestTime = endNode.getDistance();
-        resetVisitedNodes();
+        resetNodes();
     }
 
     private void checkNeighbors(List<Edge> neighbors, Heap heap) {
-        for (Edge neighbour : neighbors) {
-            Vertex sourceNode = neighbour.getSource();
-            Vertex destinationNode = neighbour.getDestination();
-            int weight = neighbour.getWeight();
-            int nodeDistance = weight + sourceNode.getDistance();
-            /*
-             * if (!prevLine.equals(neighbour.getEdgeName()) && !prevLine.equals("")) {
-             * nodeDistance += Vertex.CHANGE_STATION_TIME; }
-             */
-            if (nodeDistance < destinationNode.getDistance()) {
-                destinationNode.setParentNode(sourceNode);
-                if (visited.get(destinationNode.getName()) == null) {
+        for (Edge edge : neighbors) {
+            Vertex sourceNode = edge.getSource();
+            Vertex destinationNode = edge.getDestination();
+
+            int nodeDistance = edge.getWeight() + sourceNode.getDistance();
+
+            if (visited.get(destinationNode.getName()) == null) {
+
+                // destinationNode.setCurrentLineName(neighbour.getEdgeName());
+
+                if (detectChangeDirection(sourceNode, destinationNode, edge.getEdgeName())) {
+                    nodeDistance += Vertex.CHANGE_LINE_TIME;
+                }
+
+                if (nodeDistance < destinationNode.getDistance()) {
+                    destinationNode.setParentNode(sourceNode);
                     heap.put(destinationNode, nodeDistance);
                     visited.put(destinationNode.getName(), true);
                 }
             }
-            prevLine = neighbour.getEdgeName();
         }
     }
-    
-    private void resetVisitedNodes() {
+
+    private boolean detectChangeDirection(Vertex startNode, Vertex endNode, String currentEdgeName) {
+        if (startNode.getParentNode() != null) {
+            Edge edge = getEdgeBetweenTwoStations(startNode.getParentNode(), startNode);
+            if (edge == null) {
+                return false;
+            }
+            return edge.getEdgeName().equals(currentEdgeName);
+        }
+        return false;
+    }
+
+    private void resetNodes() {
+        // reset parentNode, distance from the source and line names between two searches for shortest time
         for (Map.Entry<String, Vertex> entry : vertices.entrySet()) {
             Vertex node = getVertex(entry.getKey());
             if (node != null) {
                 node.setDistance(Integer.MAX_VALUE);
                 node.setParentNode(null);
+                node.setCurrentLineName("");
             }
         }
     }
 
+    private Edge getEdgeBetweenTwoStations(Vertex startNode, Vertex endNode) {
+        List<Edge> neighbors = null;
+        if (startNode == null && endNode == null) {
+            return null;
+        }
+        if (endNode != null) {
+            neighbors = endNode.getAllNeighbors();
+        }
+        if (startNode != null) {
+            neighbors = startNode.getAllNeighbors();
+        }
+        for (Edge edge : neighbors) {
+            if (startNode != null) {
+                if (edge.getSource().getName().equals(startNode.getName()) &&
+                        (endNode == null || edge.getDestination().getName().equals(endNode.getName()))) {
+                    return edge;
+                }
+            }
+            if (endNode != null) {
+                if (edge.getDestination().getName().equals(endNode.getName())) {
+                    return edge;
+                }
+            }
+        }
+        return null;
+    }
+
     private void setShortestNodes(Vertex node) {
         while (node != null) {
-            this.shortestPathNodes.push(node);
+            this.shortestPathNodes.push(new Vertex(node));
             node = node.getParentNode();
         }
     }
@@ -105,16 +151,14 @@ public class Graph {
      * @return returns true if vertex exists, otherwise false
      */
     public boolean contains(String name) {
-        if (this.vertices.get(name) != null) {
-            return true;
-        }
-        return false;
+        return this.vertices.get(name) != null;
     }
 
     /**
      * @param name name of the vertex
      * @return returns vertex if existing or null
      */
+    @Nullable
     public Vertex getVertex(String name) {
         if (this.vertices.get(name) != null) {
             return this.vertices.get(name);

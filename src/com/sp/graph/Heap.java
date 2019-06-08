@@ -1,5 +1,7 @@
 package com.sp.graph;
 
+import com.sun.istack.internal.Nullable;
+
 import java.util.ArrayList;
 
 /**
@@ -23,12 +25,12 @@ public class Heap {
 
     private int leftNode(int i) {
         // position of left node
-        return (2 * i + 1);
+        return (2 * i) + 1;
     }
 
     private int rightNode(int i) {
         // position of the right node
-        return (2 * i + 2);
+        return (2 * i) + 2;
     }
 
     private void swap(int x, int y) {
@@ -61,22 +63,33 @@ public class Heap {
     }
 
     private void heapifyUp(int i) {
+        // swap the two if heap property is violated
         if (i > 0 && heap.get(parentNode(i)).getDistance() > heap.get(i).getDistance()) {
-            // swap the two if heap property is violated
             swap(i, parentNode(i));
             heapifyUp(parentNode(i));
         }
     }
 
+    /**
+     * @return Number of nodes in heap
+     */
     public int size() {
         return heap.size();
     }
 
+    /**
+     * @return Whether is heap empty or not
+     */
     public Boolean isEmpty() {
         return heap.isEmpty();
     }
 
-    // insert specified vertex into the heap
+    /**
+     * Insert vertex node to the heap
+     *
+     * @param node     Node to be added in the heap
+     * @param distance New distance from the source
+     */
     public void put(Vertex node, int distance) {
         node.setDistance(distance);
         heap.add(node);
@@ -84,11 +97,15 @@ public class Heap {
         heapifyUp(index);
     }
 
+    /**
+     * @return Get node with the smallest distance from the source
+     */
+    @Nullable
     public Vertex get() {
         try {
             // if heap is empty, throw an exception
             if (size() == 0) {
-                throw new Exception("Index out of range(Heap underflow)");
+                throw new Exception("Index out of range (Heap underflow)");
             }
             Vertex root = heap.get(0);
             // replace root of the heap with the last element of the list
@@ -100,21 +117,19 @@ public class Heap {
 
             return root;
         } catch (Exception ex) {
-            System.out.println(ex);
+            System.out.println(ex.getMessage());
             return null;
         }
     }
 
+    /**
+     * Remove all elements from the heap
+     */
     public void clear() {
         System.out.print("Removing heap: ");
         while (!heap.isEmpty()) {
-            System.out.print(get() + " ");
+            System.out.print(get().getName());
         }
         System.out.println();
-    }
-
-    // returns true if heap contains the specified element
-    public boolean contains(Vertex node) {
-        return heap.contains(node);
     }
 }

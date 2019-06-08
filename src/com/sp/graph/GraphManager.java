@@ -25,7 +25,6 @@ public class GraphManager {
      * @return List of all station between
      */
     public List<Vertex> getShortestPath(String startNodeName, String endNodeName) {
-        // TODO add real values
         Vertex startNode = graph.getVertex(startNodeName);
         Vertex endNode = graph.getVertex(endNodeName);
         if (startNode != null && endNode != null) {
@@ -36,21 +35,18 @@ public class GraphManager {
             if (stackData != null) {
                 while (!stackData.isEmpty()) {
                     Vertex node = stackData.pop();
-                    System.out.println(node.getName());
+                    // System.out.println(node.getName());
                     resultData.add(node);
                 }
             }
-
-            if (resultData != null) {
-                return resultData;
-            }
+            return resultData;
         }
         return null;
     }
 
     /**
      * Function used to load and import vertices into graph
-     * 
+     *
      * @param fileName Name of the file from where to load data
      */
     @SuppressWarnings("resource")
@@ -69,10 +65,10 @@ public class GraphManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        // TODO temp for debugging to have overview of created edges between vertices
+        // NOTE Temp here for debugging to have overview of created edges between vertices
         graph.printAll();
     }
-    
+
     private void iterateLines(List<String> parsedLine) {
         String lineName = parsedLine.get(0);
         for (int i = 1; i < parsedLine.size(); i += 2) {
@@ -118,11 +114,11 @@ public class GraphManager {
             }
         }
     }
-    
+
     private void setShortestTime(int timeInMinutes) {
-        this.shortestTime = timeInMinutes + " minutes";
+        this.shortestTime = timeInMinutes + " min";
     }
-    
+
     /**
      * @return Formated shortest time
      */

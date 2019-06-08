@@ -5,10 +5,11 @@ import java.util.List;
 
 public class Vertex {
 
-    public static final int CHANGE_STATION_TIME = 5;
+    public static final int CHANGE_LINE_TIME = 5;
     private Vertex parentNode = null;
     private List<Edge> neighbors = null;
     private int distance;
+    private String currentLineName = "";
 
     private String name;
 
@@ -17,8 +18,24 @@ public class Vertex {
         this.distance = Integer.MAX_VALUE;
     }
 
+    public Vertex(Vertex node) {
+        this.currentLineName = node.getCurrentLineName();
+        this.distance = node.getDistance();
+        this.parentNode = node.getParentNode();
+        this.neighbors = node.getAllNeighbors();
+        this.name = node.getName();
+    }
+
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getCurrentLineName() {
+        return this.currentLineName;
+    }
+
+    public void setCurrentLineName(String name) {
+        this.currentLineName = name;
     }
 
     public String getName() {
@@ -43,7 +60,7 @@ public class Vertex {
 
     /**
      * Add new edge to the vertex
-     * 
+     *
      * @param edge edge to be added to the vertex
      */
     public void addEdge(Edge edge) {
@@ -58,7 +75,7 @@ public class Vertex {
     public List<Edge> getAllNeighbors() {
         return this.neighbors;
     }
-    
+
     @Override
     public int hashCode() {
         return name.hashCode();

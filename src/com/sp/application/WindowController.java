@@ -79,7 +79,7 @@ public class WindowController {
     void execGetPath(ActionEvent event) {
         // it will be every time execute on get path button
         if (this.fieldStartStation.getText().equals("") || this.fieldEndStation.getText().equals("")
-                || this.fileName == "") {
+                || this.fileName.equals("")) {
             String title = "Missing data";
             String message = "Something went wrong. Check you entered all fields.";
             showAlertMessage(message, title, AlertType.ERROR);
@@ -92,11 +92,12 @@ public class WindowController {
             result = graphManager.getShortestPath(this.fieldStartStation.getText(), this.fieldEndStation.getText());
         }
         if (result != null) {
+            StringBuilder output = new StringBuilder();
             for (Vertex node : result) {
-                outputResult += node.getName() + "\n";
+                output.append(node.getCurrentLineName()).append(": ").append(node.getName()).append("\n");
             }
-            outputResult += "\nShortest time: " + graphManager.getShortestTime();
-            this.resultArea.setText(outputResult);
+            output.append("\nShortest time: ").append(graphManager.getShortestTime());
+            this.resultArea.setText(output.toString());
         }
     }
 

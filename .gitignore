@@ -1,2 +1,6 @@
-.settings
+.settings/
+.idea/
 bin/
+
+*.iml
+*.eml
