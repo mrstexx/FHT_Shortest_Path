@@ -65,7 +65,8 @@ public class GraphManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        // NOTE Temp here for debugging to have overview of created edges between vertices
+        // NOTE Temp here for debugging to have overview of created edges between
+        // vertices
         graph.printAll();
     }
 

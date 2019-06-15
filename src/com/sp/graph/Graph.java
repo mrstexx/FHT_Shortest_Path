@@ -1,7 +1,5 @@
 package com.sp.graph;
 
-import com.sun.istack.internal.Nullable;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,8 +37,10 @@ public class Graph {
     }
 
     /**
-     * Function used to find shortest path and time between two nodes
-     * Run Dijkstra!
+     * Function used to find shortest path and time between two nodes Run Dijkstra!
+     * <p>
+     * TODO Evaluate results of using this algorithm vs another one below Algorithm
+     * not relevant for code review - self implementation of similar algorithm
      *
      * @param startNode Node from where to find path
      * @param endNode   Node until where to find path
@@ -54,7 +54,8 @@ public class Graph {
 
         while (!heap.isEmpty()) {
             Vertex extractedNode = heap.get();
-            //System.out.println("***" + extractedNode.getName() + " : " + extractedNode.getDistance());
+            // System.out.println("***" + extractedNode.getName() + " : " +
+            // extractedNode.getDistance());
             if (extractedNode.getName().equals(endNode.getName())) {
                 break;
             }
@@ -78,7 +79,8 @@ public class Graph {
 
                 if (sourceNode.getName().equals(destinationNode.getName()) && sourceNode.getParentNode() == null) {
                     weight = 0;
-                } else if (sourceNode.getName().equals(destinationNode.getName()) && sourceNode.getParentNode() != null) {
+                } else if (sourceNode.getName().equals(destinationNode.getName())
+                        && sourceNode.getParentNode() != null) {
                     if (!detectChangeDirection(sourceNode, edge.getEdgeName())) {
                         weight = 0;
                     }
@@ -101,10 +103,13 @@ public class Graph {
     }
 
     // first implementation of dijkstra
+    // code review relevant algorithm - NOT CODE ABOVE
     public void findShortestPath(Vertex startNode, Vertex endNode) {
         Heap heap = new Heap();
         int minDistance = 0;
         do {
+            // TODO REMOVE
+            System.out.println("START: " + startNode.getName() + " : " + startNode.getDistance());
             startNode.isVisited = true;
             for (Edge edge : startNode.getAllNeighbors()) {
                 Vertex sourceNode = edge.getSource();
@@ -112,16 +117,18 @@ public class Graph {
                 if (!destinationNode.isVisited) {
                     int weight = edge.getWeight();
 
-                    // check for same stations
+                    // check for changing stations in the beginning
                     if (sourceNode.getName().equals(destinationNode.getName()) && startNode.getParentNode() == null) {
                         weight = 0;
-                    } else if (sourceNode.getName().equals(destinationNode.getName()) && startNode.getParentNode() != null) {
+                    } else if (sourceNode.getName().equals(destinationNode.getName())
+                            && startNode.getParentNode() != null) {
                         if (!detectChangeDirection(startNode, edge.getEdgeName())) {
                             weight = 0;
                         }
                     }
 
                     if (detectChangeDirection(startNode, edge.getEdgeName())) {
+                        // add 5 minutes more on changing direction (line)
                         weight += Vertex.CHANGE_LINE_TIME;
                     }
 
@@ -136,6 +143,10 @@ public class Graph {
                             destinationNode.setDistance(weight);
                         }
                     }
+
+                    // TODO REMOVE
+                    System.out.println(destinationNode.getName() + " : " + destinationNode.getDistance());
+                    // insert node into heap
                     heap.put(destinationNode);
                 }
             }
@@ -147,8 +158,9 @@ public class Graph {
                 }
             } while (startNode.isVisited);
         } while (!startNode.getName().equals(endNode.getName()));
+
         this.shortestTime = minDistance;
-        // got over parent nodes in order to reverse them
+        // go over parent nodes in order to reverse them
         setShortestNodes(endNode);
         // reset all values after in order to have default state for the next search
         resetNodes();
@@ -166,7 +178,8 @@ public class Graph {
     }
 
     private void resetNodes() {
-        // reset parentNode, distance from the source and line names between two searches for shortest time
+        // reset parentNode, distance from the source and line names between two
+        // searches for shortest time
         for (Map.Entry<String, Vertex> entry : vertices.entrySet()) {
             Vertex node = getVertex(entry.getKey());
             if (node != null) {
@@ -191,8 +204,8 @@ public class Graph {
         }
         for (Edge edge : neighbors) {
             if (startNode != null) {
-                if (edge.getSource().getName().equals(startNode.getName()) &&
-                        (endNode == null || edge.getDestination().getName().equals(endNode.getName()))) {
+                if (edge.getSource().getName().equals(startNode.getName())
+                        && (endNode == null || edge.getDestination().getName().equals(endNode.getName()))) {
                     return edge;
                 }
             }
@@ -207,6 +220,8 @@ public class Graph {
 
     private void setShortestNodes(Vertex node) {
         while (node != null) {
+            // TODO REMOVE
+            System.out.println("----------");
             System.out.println(node.getName() + " : " + node.getDistance());
             correctLineName(node);
             this.shortestPathNodes.push(new Vertex(node));
@@ -234,7 +249,6 @@ public class Graph {
      * @param name name of the vertex
      * @return returns vertex if existing or null
      */
-    @Nullable
     public Vertex getVertex(String name) {
         if (this.vertices.get(name) != null) {
             return this.vertices.get(name);
@@ -257,7 +271,7 @@ public class Graph {
             System.out.print(nodeEntry.getKey() + " -> ");
             if (((Vertex) nodeEntry.getValue()).getAllNeighbors() != null) {
                 for (Edge edge : ((Vertex) nodeEntry.getValue()).getAllNeighbors()) {
-                    System.out.print(edge.getDestination().getName() + " -> ");
+                    System.out.print(edge.getDestination().getName() + "(" + edge.getEdgeName() + ")" + " -> ");
                 }
                 System.out.println("null");
             }

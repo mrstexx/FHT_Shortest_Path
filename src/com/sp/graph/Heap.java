@@ -1,7 +1,5 @@
 package com.sp.graph;
 
-import com.sun.istack.internal.Nullable;
-
 import java.util.ArrayList;
 
 /**
@@ -98,7 +96,6 @@ public class Heap {
     /**
      * @return Get node with the smallest distance from the source
      */
-    @Nullable
     public Vertex get() {
         try {
             // if heap is empty, throw an exception
