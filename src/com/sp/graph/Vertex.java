@@ -11,6 +11,7 @@ public class Vertex {
     private List<Edge> neighbors = null;
     private int distance;
     private String currentLineName = "";
+    private String defaultLineName = "";
 
     private String name;
 
@@ -37,6 +38,14 @@ public class Vertex {
 
     public void setCurrentLineName(String name) {
         this.currentLineName = name;
+    }
+    
+    public String getDefaultLineName() {
+        return this.defaultLineName;
+    }
+    
+    public void setDefaultLineName(String defaultLineName) {
+        this.defaultLineName = defaultLineName;
     }
 
     public String getName() {

@@ -1,5 +1,6 @@
 package com.sp.graph;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,8 @@ public class Graph {
     private Map<String, Vertex> vertices;
     private int shortestTime;
     private Stack<Vertex> shortestPathNodes;
+
+    public List<Vertex> allVertices = new ArrayList<>();
 
     public Graph() {
         vertices = new HashMap<>();
@@ -111,57 +114,58 @@ public class Graph {
             // TODO REMOVE
             System.out.println("START: " + startNode.getName() + " : " + startNode.getDistance());
             startNode.isVisited = true;
-            for (Edge edge : startNode.getAllNeighbors()) {
-                Vertex sourceNode = edge.getSource();
-                Vertex destinationNode = edge.getDestination();
-                if (!destinationNode.isVisited) {
-                    int weight = edge.getWeight();
+            
+                for (Edge edge : startNode.getAllNeighbors()) {
+                    Vertex sourceNode = edge.getSource();
+                    Vertex destinationNode = edge.getDestination();
+                    if (!destinationNode.isVisited) {
+                        int weight = edge.getWeight();
 
-                    // check for changing stations in the beginning
-                    if (sourceNode.getName().equals(destinationNode.getName()) && startNode.getParentNode() == null) {
-                        weight = 0;
-                    } else if (sourceNode.getName().equals(destinationNode.getName())
-                            && startNode.getParentNode() != null) {
-                        if (!detectChangeDirection(startNode, edge.getEdgeName())) {
+                        // check for changing stations in the beginning
+                        if (sourceNode.getName().equals(destinationNode.getName())
+                                && startNode.getParentNode() == null) {
                             weight = 0;
+                        } else if (sourceNode.getName().equals(destinationNode.getName())
+                                && startNode.getParentNode() != null) {
+                            if (!detectChangeDirection(startNode, edge.getEdgeName())) {
+                                weight = 0;
+                            }
                         }
-                    }
+                        /*
+                         * if (detectChangeDirection(startNode, edge.getEdgeName())) { // add 5 minutes
+                         * more on changing direction (line) weight += Vertex.CHANGE_LINE_TIME; }
+                         */
+                        weight += minDistance;
 
-                    if (detectChangeDirection(startNode, edge.getEdgeName())) {
-                        // add 5 minutes more on changing direction (line)
-                        weight += Vertex.CHANGE_LINE_TIME;
-                    }
-
-                    weight += minDistance;
-
-                    if (destinationNode.getParentNode() == null) {
-                        destinationNode.setParentNode(startNode);
-                        destinationNode.setDistance(weight);
-                    } else {
-                        if (weight <= destinationNode.getDistance()) {
+                        if (destinationNode.getParentNode() == null) {
                             destinationNode.setParentNode(startNode);
                             destinationNode.setDistance(weight);
+                        } else {
+                            if (weight <= destinationNode.getDistance()) {
+                                destinationNode.setParentNode(startNode);
+                                destinationNode.setDistance(weight);
+                            }
                         }
-                    }
 
-                    // TODO REMOVE
-                    System.out.println(destinationNode.getName() + " : " + destinationNode.getDistance());
-                    // insert node into heap
-                    heap.put(destinationNode);
+                        // TODO REMOVE
+                        System.out.println(destinationNode.getName() + " : " + destinationNode.getDistance());
+                        // insert node into heap
+                        heap.put(destinationNode);
+                    }
                 }
-            }
+            
             do {
                 if (!heap.isEmpty()) {
                     Vertex extractedNode = heap.get();
                     minDistance = extractedNode.getDistance();
                     startNode = extractedNode;
                 }
-            } while (startNode.isVisited);
-        } while (!startNode.getName().equals(endNode.getName()));
+            } while (startNode != null && startNode.isVisited);
+        } while (startNode != null && !startNode.getName().equals(endNode.getName()));
 
         this.shortestTime = minDistance;
         // go over parent nodes in order to reverse them
-        setShortestNodes(endNode);
+        setShortestNodes(startNode);
         // reset all values after in order to have default state for the next search
         resetNodes();
     }
@@ -177,11 +181,22 @@ public class Graph {
         return false;
     }
 
-    private void resetNodes() {
+    private void __resetNodes() {
         // reset parentNode, distance from the source and line names between two
         // searches for shortest time
         for (Map.Entry<String, Vertex> entry : vertices.entrySet()) {
             Vertex node = getVertex(entry.getKey());
+            if (node != null) {
+                node.setDistance(Integer.MAX_VALUE);
+                node.isVisited = false;
+                node.setParentNode(null);
+                node.setCurrentLineName("");
+            }
+        }
+    }
+
+    private void resetNodes() {
+        for (Vertex node : allVertices) {
             if (node != null) {
                 node.setDistance(Integer.MAX_VALUE);
                 node.isVisited = false;
@@ -274,6 +289,31 @@ public class Graph {
                     System.out.print(edge.getDestination().getName() + "(" + edge.getEdgeName() + ")" + " -> ");
                 }
                 System.out.println("null");
+            }
+        }
+    }
+
+    // TODO TO BE REMOVED
+    public void printSwitchings() {
+        System.out.println("-------------------------");
+        for (Map.Entry<String, Vertex> nodeEntry : this.vertices.entrySet()) {
+            // System.out.print(nodeEntry.getKey() + " -> ");
+            if (((Vertex) nodeEntry.getValue()).getAllNeighbors() != null) {
+                for (Edge edge : ((Vertex) nodeEntry.getValue()).getAllNeighbors()) {
+                    if (edge.getEdgeName() == "Switching") {
+                        System.out.println("************Destination EDGE:");
+                        for (Edge edge1 : edge.getDestination().getAllNeighbors()) {
+                            System.out.println("S: " + edge1.getSource().getName());
+                            System.out.println("D: " + edge1.getDestination().getName());
+                        }
+                        System.out.println("Soirce EDGE:");
+                        for (Edge edge1 : edge.getSource().getAllNeighbors()) {
+                            System.out.println("S: " + edge1.getSource().getName());
+                            System.out.println("D: " + edge1.getDestination().getName());
+                        }
+                    }
+                }
+                // System.out.println("null");
             }
         }
     }

@@ -88,16 +88,20 @@ public class WindowController {
         this.resultArea.setText("");
         String outputResult = "";
         List<Vertex> result = null;
-        if (graphManager != null) {
-            result = graphManager.getShortestPath(this.fieldStartStation.getText(), this.fieldEndStation.getText());
+        if (this.fieldStartStation.getText().equals(this.fieldEndStation.getText())) {
+            outputResult = "You are already here!";
+            this.resultArea.setText (outputResult);
         }
-        if (result != null) {
-            StringBuilder output = new StringBuilder();
-            for (Vertex node : result) {
-                output.append(node.getCurrentLineName()).append(": ").append(node.getName()).append("\n");
+        else if (graphManager != null) {
+            result = graphManager.getShortestPath(this.fieldStartStation.getText(), this.fieldEndStation.getText());
+            if (result != null) {
+                StringBuilder output = new StringBuilder();
+                for (Vertex node : result) {
+                    output.append(node.getCurrentLineName()).append(": ").append(node.getName()).append("\n");
+                }
+                output.append("\nShortest time: ").append(graphManager.getShortestTime());
+                this.resultArea.setText(output.toString());
             }
-            output.append("\nShortest time: ").append(graphManager.getShortestTime());
-            this.resultArea.setText(output.toString());
         }
     }
 
