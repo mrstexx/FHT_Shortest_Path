@@ -111,10 +111,6 @@ public class GraphManager {
             // the edge
             Vertex node = null;
             List<Vertex> nodeLayer = null;
-            // boolean isLayeredNode = false;
-            if (parsedLine.get(i).equals("Stephansplatz") || parsedLine.get(i).equals("Stubentor")) {
-                System.out.println("SP");
-            }
             if (tempVertices.get(parsedLine.get(i)) != null) {
                 // take always first from layer list
                 Vertex subNode = checkSubnodesAndGetNode(lineName, tempVertices.get(parsedLine.get(i)));

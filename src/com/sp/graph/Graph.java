@@ -260,6 +260,8 @@ public class Graph {
     }
 
     private void setShortestNodes(Vertex node) {
+        String previousNodeName = "";
+        String previousLineName = "";
         while (node != null) {
             // TODO Debugging lines -> should be removed
             System.out.println("----------");
@@ -267,7 +269,15 @@ public class Graph {
             correctLineName(node);
             if (!node.getCurrentLineName().equals("Switching")) {
                 this.shortestPathNodes.push(new Vertex(node));
+                previousLineName = node.getCurrentLineName();
+            } else {
+                if (!previousLineName.equals("Switching") && !previousNodeName.equals(node.getName())) {
+                    this.shortestPathNodes.push(new Vertex(node));
+                    node.setCurrentLineName(previousLineName);
+                    previousLineName = node.getCurrentLineName();
+                }
             }
+            previousNodeName = node.getName();
             node = node.getParentNode();
         }
     }
@@ -276,7 +286,9 @@ public class Graph {
         // set correct line names on switching direction
         if (node.getParentNode() != null) {
             Edge line = getEdgeBetweenTwoStations(node.getParentNode(), node);
-            node.setCurrentLineName(line.getEdgeName());
+            if (!line.getEdgeName().equals("Switching")) {
+                node.setCurrentLineName(line.getEdgeName());
+            }
             node.getParentNode().setCurrentLineName(line.getEdgeName());
         }
     }
