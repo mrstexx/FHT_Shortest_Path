@@ -20,6 +20,11 @@ public class Vertex {
         this.distance = Integer.MAX_VALUE;
     }
 
+    /**
+     * Copy constructor
+     * 
+     * @param node
+     */
     public Vertex(Vertex node) {
         this.currentLineName = node.getCurrentLineName();
         this.distance = node.getDistance();
@@ -39,11 +44,11 @@ public class Vertex {
     public void setCurrentLineName(String name) {
         this.currentLineName = name;
     }
-    
+
     public String getDefaultLineName() {
         return this.defaultLineName;
     }
-    
+
     public void setDefaultLineName(String defaultLineName) {
         this.defaultLineName = defaultLineName;
     }

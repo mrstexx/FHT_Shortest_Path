@@ -74,7 +74,6 @@ public class GraphManager {
         // NOTE Temp here for debugging to have overview of created edges between
         // vertices
         graph.printAll();
-        // graph.printSwitchings();
     }
 
     private void mergeTempNodesAndGraph() {
@@ -130,7 +129,6 @@ public class GraphManager {
                 } else {
                     node = subNode;
                 }
-                // disabled = true;
             } else {
                 node = new Vertex(parsedLine.get(i));
                 nodeLayer = new ArrayList<>();
@@ -176,8 +174,6 @@ public class GraphManager {
                 int edgeWeight = Integer.parseInt(parsedLine.get(i + 1));
                 edge = new Edge(node, destinationNode, edgeWeight, lineName);
                 node.addEdge(edge);
-                // TEST
-                // node.addEdge(new Edge(destinationNode, node, edgeWeight, lineName));
             }
             if (i - 1 > 0) {
                 // then create edge in another direction
@@ -185,7 +181,6 @@ public class GraphManager {
                 if (tempVertices.get(parsedLine.get(i - 2)) != null) {
                     Vertex subNode = checkSubnodesAndGetNode(lineName, tempVertices.get(parsedLine.get(i - 2)));
                     if (subNode == null) {
-                        // isLayeredNode = true;
                         destinationNode = new Vertex(parsedLine.get(i - 2));
                         destinationNode.setDefaultLineName(lineName);
                         // TEST
@@ -209,16 +204,16 @@ public class GraphManager {
                 int edgeWeight = Integer.parseInt(parsedLine.get(i - 1));
                 edge = new Edge(node, destinationNode, edgeWeight, lineName);
                 node.addEdge(edge);
-                // TEST
-                // node.addEdge(new Edge(destinationNode, node, edgeWeight, lineName));
             }
-            // avoid adding double nodes to map
-            // graph.addVertex(node);
-            // }
         }
     }
 
-    // iterate through nodes - first implementation without layer handling
+    /**
+     * @deprecated NOT USED ANYMORE iterate through nodes - first implementation
+     *             without layer handling
+     * @param parsedLine
+     */
+    @SuppressWarnings("unused")
     private void __iterateLines(List<String> parsedLine) {
         String lineName = parsedLine.get(0);
         for (int i = 1; i < parsedLine.size(); i += 2) {

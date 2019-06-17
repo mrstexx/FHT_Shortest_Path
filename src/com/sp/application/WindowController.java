@@ -90,9 +90,8 @@ public class WindowController {
         List<Vertex> result = null;
         if (this.fieldStartStation.getText().equals(this.fieldEndStation.getText())) {
             outputResult = "You are already here!";
-            this.resultArea.setText (outputResult);
-        }
-        else if (graphManager != null) {
+            this.resultArea.setText(outputResult);
+        } else if (graphManager != null) {
             result = graphManager.getShortestPath(this.fieldStartStation.getText(), this.fieldEndStation.getText());
             if (result != null) {
                 StringBuilder output = new StringBuilder();
@@ -100,9 +99,13 @@ public class WindowController {
                     output.append(node.getCurrentLineName()).append(": ").append(node.getName()).append("\n");
                 }
                 output.append("\nShortest time: ").append(graphManager.getShortestTime());
-                this.resultArea.setText(output.toString());
+                outputResult = output.toString();
+            } else {
+                outputResult = "Path cannot be found. Please check station names.";
             }
         }
+        // set output text to text area in GUI
+        this.resultArea.setText(outputResult);
     }
 
     private void showAlertMessage(String message, String title, AlertType alertType) {
